@@ -1,0 +1,125 @@
+@startuml
+
+
+
+/' Objects '/
+
+class Account {
+	+Account(ICallbackable& callback, IAccountState* state)
+	+~Account()
+	-callback : ICallbackable&
+	+get() : float {query}
+	+close() : void
+	+deposit(float amount) : void
+	+freeze() : void
+	+holderVerified() : void
+	+setState(StateEnum state) : void
+	+withdraw(float amount) : void
+}
+
+class Active {
+	+Active(ICallbackable& callback)
+	+~Active()
+	-gui : ICallbackable&
+	+close(Account* account) : void
+	+deposit(Account* account, std::function<float()> add) : void
+	+freeze(Account* account) : void
+	+holderVerified(Account* account) : void
+	+withdraw(Account* account, std::function<float()> subtract) : void
+}
+
+
+class Bank {
+	+~Bank()
+	-callbackInvoked : bool
+	+wasCallbackInvoked() : bool
+	-callback() : void
+}
+
+
+class Close {
+	+~Close()
+	+close(Account* account) : void
+	+deposit(Account* account, std::function<float()> add) : void
+	+freeze(Account* account) : void
+	+holderVerified(Account* account) : void
+	+withdraw(Account* account, std::function<float()> subtract) : void
+}
+
+
+class Frozen {
+	+Frozen(ICallbackable& callback)
+	+~Frozen()
+	-gui : ICallbackable&
+	+close(Account* account) : void
+	+deposit(Account* account, std::function<float()> add) : void
+	+freeze(Account* account) : void
+	+holderVerified(Account* account) : void
+	+withdraw(Account* account, std::function<float()> subtract) : void
+}
+
+
+abstract class IAccountState {
+	+~IAccountState()
+	+{abstract} close(Account* account) : void
+	+{abstract} deposit(Account* account, std::function<float()> add) : void
+	+{abstract} freeze(Account* account) : void
+	+{abstract} holderVerified(Account* account) : void
+	+{abstract} withdraw(Account* account, std::function<float()> subtract) : void
+}
+
+
+abstract class ICallbackable {
+	+~ICallbackable()
+	+{abstract} callback() : void
+}
+
+
+class NotVerified {
+	+~NotVerified()
+	+close(Account* account) : void
+	+deposit(Account* account, std::function<float()> add) : void
+	+freeze(Account* account) : void
+	+holderVerified(Account* account) : void
+	+withdraw(Account* account, std::function<float()> subtract) : void
+}
+
+
+
+
+
+/' Inheritance relationships '/
+
+.IAccountState <|-- .Active
+
+
+.IAccountState <|-- .Close
+
+
+.IAccountState <|-- .Frozen
+
+
+.IAccountState <|-- .NotVerified
+
+
+.ICallbackable <|-- .Bank
+
+
+
+
+/' Aggregation relationships '/
+
+.Account *-- .IAccountState
+.Account *-- .ICallbackable
+
+
+.Active *-- .ICallbackable
+
+
+.Frozen *-- .ICallbackable
+
+
+
+
+
+@enduml
