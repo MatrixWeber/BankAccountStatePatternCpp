@@ -21,20 +21,19 @@ public:
 
 	void withdraw(Account *account, std::function<float()> subtract) override
 	{
-        subtract();
 		gui.callback();
-        account->setState(Account::StateEnum::ST_ACTIVE);
+        account->setState(Account::StateEnum::ST_FROZEN);
 	}
 
 	void freeze(Account *account) override
 	{
         account->setState(Account::StateEnum::ST_FROZEN);
 	}
-    void Frozen::close(Account *account) override {
+    void close(Account *account) override {
         account->setState(Account::StateEnum::ST_CLOSE);
     }
 
-    void Frozen::holderVerified(Account *account) override {
+    void holderVerified(Account *account) override {
         account->setState(Account::StateEnum::ST_FROZEN);
     }
 
